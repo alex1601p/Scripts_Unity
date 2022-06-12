@@ -19,6 +19,13 @@ public class PlayerMovement : MonoBehaviour
         float moveX = Input.GetAxisRaw("Horizontal");
         float moveY = Input.GetAxisRaw("Vertical");
         moveInput = new Vector2(moveX, moveY).normalized;
+        if (Input.GetKey("left shift"))
+        {
+            speed = 10f;
+        }else
+        {
+            speed = 3f;
+        }
     }
 
     // Genera el movimiento del personaje
