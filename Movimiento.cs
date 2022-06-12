@@ -1,45 +1,45 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Movimiento : MonoBehaviour
+public class PlayerMovement : MonoBehaviour
 {
-    public float Speed = 1.0f;
-    public float RotationSpeed = 1.0f;
-    public float JumpForce = 1.0f;
+    // Velocidad a la cual el personaje se movera
+    public float speed = 3f;
 
-    private Rigidbody Physics;
+    private Rigidbody2D playerRb;
+    private Vector2 moveInput;
+    private Animator playerAnimator;
 
-    // Start is called before the first frame update
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-
-        Physics = GetComponent<Rigidbody>();
+        playerRb = GetComponent<Rigidbody2D>();
+        playerAnimator = GetComponent<Animator>();
     }
 
-    // Update is called once per frame
+    // Llama los inputs cada frame
     void Update()
     {
-        //Movimiento
-        float horizontal = Input.GetAxis("Horizontal");
+        float moveX = Input.GetAxisRaw("Horizontal");
+        float moveY = Input.GetAxisRaw("Vertical");
+        moveInput = new Vector2(moveX, moveY).normalized;
 
-        float vertical = Input.GetAxis("Vertical");
-
-        transform.Translate(new Vector3(horizontal, 0.0f, vertical) * Time.deltaTime * Speed);
-
-        //Rotacion camara
-        float rotationX = Input.GetAxis("Mouse X");
-        float rotationY = Input.GetAxis("Mouse Y");
-        Debug.Log(rotationY);
-        // (Y,X)
-        transform.Rotate(new Vector3(-rotationY * Time.deltaTime * RotationSpeed, rotationX * Time.deltaTime * RotationSpeed, 0));
-
-        //Salto
-        if (Input.GetKeyDown(KeyCode.Space))
+        // Si se mantiene el shift izquierdo el personaje aumetara su velocidad
+        if (Input.GetKey("left shift"))
         {
-            Physics.AddForce(new Vector3(0, JumpForce, 0),ForceMode.Impulse);
+            speed = 10f;
+        }else
+        {
+            speed = 3f;
         }
+
+        playerAnimator.SetFloat("Horizontal", moveX);
+        playerAnimator.SetFloat("Vertical", moveY);
+        playerAnimator.SetFloat("Speed", moveInput.sqrMagnitude);
+    }
+
+    // Genera el movimiento del personaje
+    private void FixedUpdate()
+    {
+        playerRb.MovePosition(playerRb.position + moveInput * speed * Time.fixedDeltaTime);
     }
 }
