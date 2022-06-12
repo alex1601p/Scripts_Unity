@@ -19,6 +19,8 @@ public class PlayerMovement : MonoBehaviour
         float moveX = Input.GetAxisRaw("Horizontal");
         float moveY = Input.GetAxisRaw("Vertical");
         moveInput = new Vector2(moveX, moveY).normalized;
+
+        // Si se mantiene el shift izquierdo el personaje aumetara su velocidad
         if (Input.GetKey("left shift"))
         {
             speed = 10f;
